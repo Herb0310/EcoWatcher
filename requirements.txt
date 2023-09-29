@@ -1,2 +1,4 @@
 fastapi==0.70.0
 uvicorn==0.13
+Flask==2.3.3
+line-bot-sdk==3.5.0
