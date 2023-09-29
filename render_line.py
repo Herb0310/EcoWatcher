@@ -1,16 +1,31 @@
 import os
-from flask import Flask
-from flask import request, abort
-from linebot import (LineBotApi, WebhookHandler)
-from linebot.exceptions import (InvalidSignatureError)
-from linebot.models import (MessageEvent, TextMessage, TextSendMessage,)
+from flask import Flask, request, abort
 
-secret = os.environ["LINE_SECRET"]
-handler = LineBotApi(secret)
-token = os.environ["LINE_TOKEN"]
-line_bot_api = WebhookHandler(token)
+from linebot.v3 import (
+    WebhookHandler
+)
+from linebot.v3.exceptions import (
+    InvalidSignatureError
+)
+from linebot.v3.messaging import (
+    Configuration,
+    ApiClient,
+    MessagingApi,
+    ReplyMessageRequest,
+    TextMessage
+)
+from linebot.v3.webhooks import (
+    MessageEvent,
+    TextMessageContent
+)
 
 app = Flask(__name__)
+
+token = os.environ["LINE_TOKEN"]
+secret = os.environ["LINE_SECRET"]
+configuration = Configuration(access_token=token)
+handler = WebhookHandler(secret)
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -25,16 +40,22 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
+        app.logger.info("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
 
-@handler.add(MessageEvent, message=TextMessage)
+
+@handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
+    with ApiClient(configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        line_bot_api.reply_message_with_http_info(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=[TextMessage(text=event.message.text)]
+            )
+        )
 
 if __name__ == "__main__":
     app.run()
