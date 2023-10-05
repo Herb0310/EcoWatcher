@@ -7,8 +7,8 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 app = Flask(__name__)
 
 # LINE Botのチャンネルアクセストークンとチャンネルシークレット
-line_bot_api = os.environ('LINE_TOKEN')
-handler = os.environ('LINE_SECRET')
+line_bot_api = os.getenv('LINE_TOKEN')
+handler = os.getenv('LINE_SECRET')
 
 @app.route("/callback", methods=['POST'])
 def callback():
