@@ -9,6 +9,7 @@ app = Flask(__name__)
 # LINE Botのチャンネルアクセストークンとチャンネルシークレット
 line_bot_api = os.getenv('LINE_TOKEN')
 handler = os.getenv('LINE_SECRET')
+handler = WebhookHandler(handler)
 
 @app.route("/callback", methods=['POST'])
 def callback():
