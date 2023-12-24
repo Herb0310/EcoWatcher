@@ -1,6 +1,5 @@
 from flask import Flask, request, abort
 import os
-import dotenv
 import sys
 from linebot import (
    LineBotApi, WebhookHandler
@@ -12,9 +11,6 @@ from linebot.models import (
    MessageEvent, TextMessage, TextSendMessage, FollowEvent,
    ImageMessage, AudioMessage,
 )
-
-# Load .env file
-dotenv.load_dotenv()
 
 app = Flask(__name__)
  #環境変数取得 
