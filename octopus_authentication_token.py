@@ -3,12 +3,12 @@ from gql.transport.aiohttp import AIOHTTPTransport
 import json 
 import os
 import sys
-import dotenv
+#import dotenv
 import requests
 from datetime import datetime, timedelta
 
 # Load .env file
-dotenv.load_dotenv()
+#dotenv.load_dotenv()
 
 class OctopusAuthenticationToken:
     # GraphQL endpoint URL
